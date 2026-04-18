@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PustokMvcApp.Data;
+using PustokMvcApp.Extensions;
 
 namespace PustokMvcApp.Areas.Manage.Controllers
 {
@@ -8,10 +9,12 @@ namespace PustokMvcApp.Areas.Manage.Controllers
     public class SliderController : Controller
     {
         private readonly PustokMvcAppDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public SliderController(PustokMvcAppDbContext context)
+        public SliderController(PustokMvcAppDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public async Task<IActionResult> Index()
@@ -53,13 +56,45 @@ namespace PustokMvcApp.Areas.Manage.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Models.Slider slider)
         {
-            if (ModelState.IsValid)
+            if (slider.File == null)
             {
-                _context.Sliders.Add(slider);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("File", "Please select an image file.");
+                return View(slider);
             }
-            return View(slider);
+
+            if (!ModelState.IsValid)
+                return View(slider);
+
+            var file = slider.File;
+            
+            // Check if exact same slider already exists
+            bool isExist = await _context.Sliders.AnyAsync(s => 
+                s.Title == slider.Title && 
+                s.Description == slider.Description && 
+                s.ImageUrl == file.FileName);
+
+            if (isExist)
+            {
+                ModelState.AddModelError("", "A slider with the exact same Title, Description, and Image already exists!");
+                return View(slider);
+            }
+
+            // Using the new FileManager extension method
+            string fileName = file.SaveFile("assets\\image\\bg-images", _env.WebRootPath);
+
+            var newSlider = new Models.Slider
+            {
+                Title = slider.Title,
+                ButtonText = slider.ButtonText,
+                ButtonUrl = slider.ButtonUrl,
+                Description = slider.Description,
+                ImageUrl = fileName
+            };
+
+            _context.Sliders.Add(newSlider);
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -88,13 +123,40 @@ namespace PustokMvcApp.Areas.Manage.Controllers
         {
             if (id != slider.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(slider);
+
+            var existingSlider = await _context.Sliders.FindAsync(id);
+            if (existingSlider == null) return NotFound();
+
+            var file = slider.File;
+            string fileNameToCheck = file != null ? file.FileName : existingSlider.ImageUrl;
+
+            // Check if another slider with the exact same details exists
+            bool isExist = await _context.Sliders.AnyAsync(s => 
+                s.Id != id && 
+                s.Title == slider.Title && 
+                s.Description == slider.Description && 
+                s.ImageUrl == fileNameToCheck);
+
+            if (isExist)
             {
-                _context.Update(slider);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Another slider with the exact same Title, Description, and Image already exists!");
+                return View(slider);
             }
-            return View(slider);
+
+            if (file != null)
+            {
+                existingSlider.ImageUrl = file.SaveFile("assets\\image\\bg-images", _env.WebRootPath);
+            }
+
+            existingSlider.Title = slider.Title;
+            existingSlider.ButtonText = slider.ButtonText;
+            existingSlider.ButtonUrl = slider.ButtonUrl;
+            existingSlider.Description = slider.Description;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)

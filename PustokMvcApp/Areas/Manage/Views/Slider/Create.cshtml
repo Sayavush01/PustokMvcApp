@@ -10,13 +10,13 @@
                 <h6 class="m-0 font-weight-bold text-primary">Create New Slider</h6>
             </div>
             <div class="card-body">
-                <form asp-action="Create">
+                <form asp-action="Create" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     
                     <div class="form-group mb-3">
-                        <label asp-for="ImageUrl" class="control-label font-weight-bold">Image Name (e.g. bg-1.jpg)</label>
-                        <input asp-for="ImageUrl" class="form-control" />
-                        <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                        <label asp-for="File" class="control-label font-weight-bold">Slider Image File</label>
+                        <input asp-for="File" class="form-control" type="file" accept="image/*" />
+                        <span asp-validation-for="File" class="text-danger small"></span>
                     </div>
 
                     <div class="form-group mb-3">
@@ -31,6 +31,7 @@
                         <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
 
+                 
                     <div class="form-group mb-3">
                         <label asp-for="ButtonText" class="control-label font-weight-bold">Button Text</label>
                         <input asp-for="ButtonText" class="form-control" />

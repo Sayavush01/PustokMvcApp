@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using PustokMvcApp.Attributes;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 
 namespace PustokMvcApp.Models
@@ -13,6 +14,8 @@ namespace PustokMvcApp.Models
         public string Description { get; set; }
 
         [NotMapped]
+        [FileLength(2)]
+        [FileTypes(".jpg, .jpeg, .png, .gif")]
         public IFormFile File { get; set; }
     }
 }
