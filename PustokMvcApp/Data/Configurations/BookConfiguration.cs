@@ -8,6 +8,8 @@ namespace PustokMvcApp.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Book> builder)
         {
+            builder.Property(x => x.Id).HasDefaultValueSql("NEWID()");
+
             builder.HasMany(b => b.BookImages)
                 .WithOne(b => b.Book)
                 .HasForeignKey(b => b.BookId)
