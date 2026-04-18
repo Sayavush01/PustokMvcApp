@@ -1,22 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using MVC_WEB_APP.Models;
 using PustokMvcApp.Models;
 
 namespace PustokMvcApp.Data
 {
-    public class PustokMvcAppDbContext : DbContext
+    public class PustokMvcAppDbContext(DbContextOptions<PustokMvcAppDbContext> options) : IdentityDbContext<AppUser>(options)
     {
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<BookTag> BookTags { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Slider> Sliders { get; set; }
-        public PustokMvcAppDbContext(DbContextOptions<PustokMvcAppDbContext> options) : base(options)
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-        }
-        protected  override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PustokMvcAppDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PustokMvcAppDbContext).Assembly);
+            
         }
     }
 }
