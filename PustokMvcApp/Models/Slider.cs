@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace PustokMvcApp.Models
 {
@@ -11,5 +12,7 @@ namespace PustokMvcApp.Models
          public string ButtonText { get; set; }
         public string Description { get; set; }
 
+        [NotMapped]
+        public IFormFile File { get; set; }
     }
 }

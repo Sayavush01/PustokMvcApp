@@ -5,8 +5,8 @@ namespace PustokMvcApp.Models
 {
     public class Author:BaseEntity
     {
-        [Required]    
-        [MaxLength(25)]
+        [Required(ErrorMessage = "Full Name is strictly required.")]    
+        [MaxLength(25, ErrorMessage = "The Full Name cannot exceed 25 characters!")]
         public string FullName { get; set; }
         public List<Book> Books { get; set; }
     }

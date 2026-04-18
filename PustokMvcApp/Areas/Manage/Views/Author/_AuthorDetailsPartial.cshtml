@@ -1,0 +1,21 @@
+@model PustokMvcApp.Models.Author
+
+<div class="modal-header">
+    <h5 class="modal-title" id="authorModalLabel">Author Details</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <dl class="row mb-0">
+        <dt class="col-sm-4">ID Number</dt>
+        <dd class="col-sm-8 text-muted" style="word-break: break-all;">@Model.Id</dd>
+
+        <dt class="col-sm-4">Full Name</dt>
+        <dd class="col-sm-8"><strong>@Model.FullName</strong></dd>
+    </dl>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <a href="@Url.Action("Edit", "Author", new { id = Model.Id })" class="btn btn-warning">Edit Author</a>
+</div>

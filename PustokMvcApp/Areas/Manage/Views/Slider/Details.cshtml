@@ -1,0 +1,44 @@
+@model PustokMvcApp.Models.Slider
+@{
+    ViewData["Title"] = "Slider Details";
+}
+
+<div class="card shadow mb-4 col-md-8 mx-auto">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Slider Details - @Model.Title</h6>
+    </div>
+    <div class="card-body">
+        <div class="text-center mb-4">
+            @if(!string.IsNullOrEmpty(Model.ImageUrl)) {
+                <img src="~/assets/image/bg-images/@Model.ImageUrl" alt="Slider Image" class="img-fluid rounded" style="max-height: 250px;" />
+            }
+        </div>
+        <dl class="row mb-0">
+            <dt class="col-sm-3">ID Number</dt>
+            <dd class="col-sm-9 text-muted">@Model.Id</dd>
+
+            <dt class="col-sm-3">Title</dt>
+            <dd class="col-sm-9"><strong>@Model.Title</strong></dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Image Name</dt>
+            <dd class="col-sm-9">@Model.ImageUrl</dd>
+
+            <dt class="col-sm-3">Button Text</dt>
+            <dd class="col-sm-9">@Model.ButtonText</dd>
+
+            <dt class="col-sm-3">Button URL</dt>
+            <dd class="col-sm-9"><a href="@Model.ButtonUrl">@Model.ButtonUrl</a></dd>
+        </dl>
+    </div>
+    <div class="card-footer bg-white text-center">
+        <a asp-action="Index" class="btn btn-secondary mr-2">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit Slider
+        </a>
+    </div>
+</div>
