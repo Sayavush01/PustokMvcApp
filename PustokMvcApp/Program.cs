@@ -20,7 +20,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(opt=>
 {
-    opt.Password.RequiredLength = 8;
+    opt.Password.RequiredLength = 6;
     opt.Password.RequireNonAlphanumeric = true;
     opt.Password.RequireUppercase = true;
     opt.Password.RequireLowercase = true;
