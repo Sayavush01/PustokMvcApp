@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_WEB_APP.Models;
 using MVC_WEB_APP.ViewModels;
@@ -100,6 +101,7 @@ namespace MVC_WEB_APP.Controllers
             return PartialView("_BasketPartial", basketItems);
         }
 
+
         private List<BasketItemVm> GetBasketItems()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
@@ -139,6 +141,85 @@ namespace MVC_WEB_APP.Controllers
                    ?? new List<BasketItemVm>();
         }
 
+        [Authorize(Roles = "User")]
+        public IActionResult CheckOut()
+        {
+            CheckOutVm checkOutVm = new CheckOutVm();
+            var user = appContex.Users
+                .Include(x => x.BasketItems)
+                .ThenInclude(x => x.Book)
+                .FirstOrDefault(x => x.UserName == User.Identity.Name);
+            checkOutVm.CheckOutItemVms = user.BasketItems.Select(x => new CheckOutItemVm
+            {
+               
+                Name = x.Book.Name,
+                Price = x.Book.DiscountPercentage > 0
+                    ? x.Book.Price * (100 - x.Book.DiscountPercentage) / 100
+                    : x.Book.Price,
+                Count = x.Count,
+              
+            }).ToList();
+            var basket = Request.Cookies["basket"];
+
+
+
+            return View(checkOutVm);
+
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public IActionResult CheckOut(CheckOutVm checkOutVm)
+        {
+            var user = appContex.Users
+                .Include(x => x.BasketItems)
+                .ThenInclude(x => x.Book)
+                .FirstOrDefault(x => x.UserName == User.Identity.Name);
+         
+            if (!ModelState.IsValid)
+            {
+                
+                checkOutVm.CheckOutItemVms = user.BasketItems.Select(x => new CheckOutItemVm
+                {
+                    Name = x.Book.Name,
+                    Price = x.Book.DiscountPercentage > 0
+                        ? x.Book.Price * (100 - x.Book.DiscountPercentage) / 100
+                        : x.Book.Price,
+                    Count = x.Count,
+                }).ToList();
+                return View(checkOutVm);
+            }
+            var order = new Order
+            {
+                Id = Guid.NewGuid(),
+                AppUserId = user.Id,
+                ZipCode = checkOutVm.OrderVm.ZipCode,
+                State = checkOutVm.OrderVm.State,
+                TownCity = checkOutVm.OrderVm.TownCity,
+                Address = checkOutVm.OrderVm.Address,
+                CreatedDate = DateTime.Now,
+                TotalPrice = user.BasketItems.Sum(x => x.Count * (x.Book.DiscountPercentage > 0
+                    ? x.Book.Price * (100 - x.Book.DiscountPercentage) / 100
+                    : x.Book.Price)),
+                OrderItems = user.BasketItems.Select(x => new OrderItem
+                {
+            
+                    BookId = x.BookId,
+                    Count = x.Count,
+                    Price = x.Book.DiscountPercentage > 0
+                        ? x.Book.Price * (100 - x.Book.DiscountPercentage) / 100
+                        : x.Book.Price
+                }).ToList()
+            };
+            appContex.Orders.Add(order);
+            appContex.BasketItems.RemoveRange(user.BasketItems);
+            appContex.SaveChanges();
+            Response.Cookies.Delete("basket", new() { Expires = DateTimeOffset.Now.AddDays(-1) }) ;
+            return RedirectToAction("Index", "Home");
+
+
+
+        }
         public IActionResult SetCookie()
         {
             Response.Cookies.Append("Pustok", "Hello Pustok");

@@ -14,6 +14,9 @@ namespace PustokMvcApp.Data
         public DbSet<Slider> Sliders { get; set; }
 
         public DbSet<BasketItem> BasketItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderItem> OrderItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

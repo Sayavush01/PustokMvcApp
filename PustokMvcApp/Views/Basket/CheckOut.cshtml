@@ -1,0 +1,93 @@
+﻿@using MVC_WEB_APP.ViewModels
+@model CheckOutVm
+<section class="breadcrumb-section">
+	<h2 class="sr-only">Site Breadcrumb</h2>
+	<div class="container">
+		<div class="breadcrumb-contents">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="index.html">Home</a></li>
+					<li class="breadcrumb-item active">Checkout</li>
+				</ol>
+			</nav>
+		</div>
+	</div>
+</section>
+<main id="content" class="page-section inner-page-sec-padding-bottom space-db--20">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<!-- Checkout Form s-->
+				<div class="checkout-form">
+					<div class="row row-40">
+						<div class="col-12">
+							<h1 class="quick-title">Checkout</h1>
+							<!-- Slide Down Trigger  -->
+						
+							</div>
+							<!-- Slide Down Blox ==> Login Box  -->
+							<div class="" id="quick-login">
+							<form id="orderfrom" asp-action="CheckOut" method="post">
+									<div class="quick-login-form">
+										
+										<div class="form-group">
+											<label asp-for="@Model.OrderVm.Address"></label>
+											<input asp-for="@Model.OrderVm.Address" placeholder="">
+										<span class="text-danger" asp-validation-for="@Model.OrderVm.Address"></span>
+										</div>
+									<div class="form-group">
+										<label asp-for="@Model.OrderVm.TownCity"></label>
+										<input asp-for="@Model.OrderVm.TownCity" placeholder="">
+										<span class="text-danger" asp-validation-for="@Model.OrderVm.TownCity"></span>
+									</div>
+									<div class="form-group">
+										<label asp-for="@Model.OrderVm.ZipCode"></label>
+										<input asp-for="@Model.OrderVm.ZipCode" placeholder="">
+										<span class="text-danger" asp-validation-for="@Model.OrderVm.ZipCode"></span>
+									</div>
+									<div class="form-group">
+										<label asp-for="@Model.OrderVm.State"></label>
+										<input asp-for="@Model.OrderVm.State" placeholder="">
+										<span class="text-danger" asp-validation-for="@Model.OrderVm.State"></span>
+									</div>
+									
+									</div>
+								</form>
+							</div>
+							</div>
+						<div class="col-lg-5">
+							<div class="row">
+								<!-- Cart Total -->
+								<div class="col-12">
+									<div class="checkout-cart-total">
+										<h2 class="checkout-title">YOUR ORDER</h2>
+										<h4>Product <span>Total</span></h4>
+										<ul>
+											@foreach (var item in Model.CheckOutItemVms)
+											{
+												<li>
+													<span class="left">
+														@item.Name
+														<strong> × @item.Count</strong>
+													</span>
+													<span class="right">
+                                                        $@(item.Price* item.Count))
+													</span>
+												</li>
+                                            }
+										</ul>
+										<p>Sub Total <span>$@(Model.CheckOutItemVms.Sum(x => x.Price * x.Count))</span></p>
+										<p>Shipping Fee <span>$00.00</span></p>
+										<h4>Grand Total <span>$@(Model.CheckOutItemVms.Sum(x => x.Price * x.Count))</span></h4>
+									
+										<button formId="place-order-form"  class="place-order w-100">Place order</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
