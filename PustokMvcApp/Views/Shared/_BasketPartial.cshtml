@@ -1,0 +1,37 @@
+﻿@using MVC_WEB_APP.ViewModels
+@model List<BasketItemVm>
+@{
+    var items = Model;
+}
+@if(items.Count>0)
+{
+ @foreach (var item in items)
+    {
+        <div class=" single-cart-block ">
+            <div class="cart-product">
+                <a href="/book/detail/@item.BookId" class="image">
+                    <img src="~/assets/image/products/@item.MainImageUrl" alt="">
+                </a>
+                <div class="content">
+                    <h3 class="title">
+                        <a href="/book/detail/@item.BookId">
+                            @item.Name
+                        </a>
+                    </h3>
+                    <p class="price"><span class="qty">@item.Count ×</span> £@item.Price</p>
+                    <button class="cross-btn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+    }
+    <div class=" single-cart-block ">
+        <div class="btn-block">
+            <a href="cart.html" class="btn">
+                View Cart <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="checkout.html" class="btn btn--primary">
+                Check Out <i class="fas fa-chevron-right"></i>
+            </a>
+        </div>
+    </div>
+}

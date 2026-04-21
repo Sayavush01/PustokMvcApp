@@ -32,4 +32,18 @@
                 $("#quickModal").modal('show');
             });
     });
+    $(document).on("click", ".addbasket, .addToCart", function (e) {
+        e.preventDefault();
+        let url = $(this).attr("href");
+        fetch(url)
+            .then((response) => response.text())
+            .then((html) => {
+                $(".cart-dropdown-block").html(html);
+            });
+    });
+
+    $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('.sb-slick-slider').slick('setPosition');
+    });
+
 });

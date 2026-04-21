@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PustokMvcApp.Data;
 
@@ -11,9 +12,11 @@ using PustokMvcApp.Data;
 namespace MVC_WEB_APP.Migrations
 {
     [DbContext(typeof(PustokMvcAppDbContext))]
-    partial class PustokMvcAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260421175440_mig_11")]
+    partial class mig_11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,7 +102,10 @@ namespace MVC_WEB_APP.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("BookId")
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("BookId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Count")
@@ -109,7 +115,7 @@ namespace MVC_WEB_APP.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId1");
 
                     b.ToTable("BasketItems");
                 });
@@ -399,9 +405,7 @@ namespace MVC_WEB_APP.Migrations
 
                     b.HasOne("PustokMvcApp.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BookId1");
 
                     b.Navigation("AppUser");
 

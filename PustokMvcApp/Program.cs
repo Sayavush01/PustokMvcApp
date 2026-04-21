@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MVC_WEB_APP;
 using MVC_WEB_APP.Models;
 using PustokMvcApp.Data;
 
@@ -30,7 +31,10 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt=>
     opt.Lockout.MaxFailedAccessAttempts = 3;
     opt.Lockout.AllowedForNewUsers = true;
 
-}).AddEntityFrameworkStores<PustokMvcAppDbContext>();
+})
+    .AddErrorDescriber<CustomIdentityErrorDescriber>()
+
+    .AddEntityFrameworkStores<PustokMvcAppDbContext>();
 
 var app = builder.Build();
 app.UseSession();

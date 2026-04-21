@@ -1,4 +1,5 @@
-﻿
+﻿@using MVC_WEB_APP.ViewModels
+
 <html lang="zxx">
 
 
@@ -282,8 +283,16 @@
                             <div class="main-navigation flex-lg-right">
                                 <div class="cart-widget">
                                     <div class="login-block">
-                                        <a href="login-register.html" class="font-weight-bold">Login</a> <br>
-                                        <span>or</span><a href="login-register.html">Register</a>
+                                        @if (User.Identity.IsAuthenticated) {
+                                           
+                                            <a asp-controller="account" asp-action="userprofile" class="font-weight-bold">@User.Identity.Name</a> <br>
+                                        <a asp-controller="account" asp-action="logout" class="font-weight-bold">logout</a> <br>
+                                        
+                                        }
+                                        else {
+                                        <a asp-controller="account" asp-action="login" class="font-weight-bold">Login</a> <br>
+                                        <a asp-controller="account" asp-action="register" class="font-weight-bold">register</a> <br>
+                                        }
                                     </div>
                                     <div class="cart-block">
                                         <div class="cart-total">
@@ -299,28 +308,7 @@
                                             </span>
                                         </div>
                                         <div class="cart-dropdown-block">
-                                            <div class=" single-cart-block ">
-                                                <div class="cart-product">
-                                                    <a href="product-details.html" class="image">
-                                                        <img src="~/assets/image/products/cart-product-1.jpg" alt="">
-                                                    </a>
-                                                    <div class="content">
-                                                        <h3 class="title"><a href="product-details.html">Kodak PIXPRO
-                                                                Astro Zoom AZ421 16 MP</a>
-                                                        </h3>
-                                                        <p class="price"><span class="qty">1 ×</span> £87.34</p>
-                                                        <button class="cross-btn"><i class="fas fa-times"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class=" single-cart-block ">
-                                                <div class="btn-block">
-                                                    <a href="cart.html" class="btn">View Cart <i
-                                                            class="fas fa-chevron-right"></i></a>
-                                                    <a href="checkout.html" class="btn btn--primary">Check Out <i
-                                                            class="fas fa-chevron-right"></i></a>
-                                                </div>
-                                            </div>
+                                            @Html.Partial("_BasketPartial", new List<BasketItemVm>())
                                         </div>
                                     </div>
                                 </div>
@@ -903,6 +891,7 @@
     <script src="~/assets/js/ajax-mail.js"></script>
     <script src="~/assets/js/custom.js"></script>
     <script src="~/assets/js/main.js"></script>
+    @RenderSection("scripts", required: false)
 </body>
 
 

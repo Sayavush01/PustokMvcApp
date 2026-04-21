@@ -3,7 +3,7 @@
     public abstract class BaseEntity
     {
         //guid bize unique idler verir, her entitynin idsi unique olur
-        public Guid Id { get; init; }
+        public Guid Id { get; set; }
         protected BaseEntity()
         {
             Id = Guid.NewGuid();

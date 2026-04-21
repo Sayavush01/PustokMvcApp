@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PustokMvcApp.Data;
 
@@ -11,9 +12,11 @@ using PustokMvcApp.Data;
 namespace MVC_WEB_APP.Migrations
 {
     [DbContext(typeof(PustokMvcAppDbContext))]
-    partial class PustokMvcAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260421172835_mig_10")]
+    partial class mig_10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,10 +99,10 @@ namespace MVC_WEB_APP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("BookId")
+                    b.Property<Guid?>("BookId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Count")
@@ -107,9 +110,7 @@ namespace MVC_WEB_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookId1");
 
                     b.ToTable("BasketItems");
                 });
@@ -393,17 +394,9 @@ namespace MVC_WEB_APP.Migrations
 
             modelBuilder.Entity("MVC_WEB_APP.Models.BasketItem", b =>
                 {
-                    b.HasOne("MVC_WEB_APP.Models.AppUser", "AppUser")
-                        .WithMany("BasketItems")
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("PustokMvcApp.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
+                        .HasForeignKey("BookId1");
 
                     b.Navigation("Book");
                 });
@@ -498,11 +491,6 @@ namespace MVC_WEB_APP.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("MVC_WEB_APP.Models.AppUser", b =>
-                {
-                    b.Navigation("BasketItems");
                 });
 
             modelBuilder.Entity("PustokMvcApp.Models.Author", b =>

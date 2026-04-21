@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PustokMvcApp.Areas.Manage.Controllers;
 [Area("Manage")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class DashboardController : Controller
 {
     public IActionResult Index()
