@@ -20,6 +20,7 @@
     <Folder Include="Areas\Manage\Data\" />
     <Folder Include="Areas\Manage\Models\" />
     <Folder Include="Services\" />
+    <Folder Include="ViewComponents\" />
   </ItemGroup>
 
 </Project>

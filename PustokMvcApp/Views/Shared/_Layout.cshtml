@@ -1,5 +1,42 @@
-﻿@using MVC_WEB_APP.ViewModels
+﻿@using MVC_WEB_APP.Models
+@using MVC_WEB_APP.ViewModels
+@using PustokMvcApp.Data
+@using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
+@inject PustokMvcAppDbContext _context
+@{
+    var basketItems = new List<BasketItemVm>();
 
+    if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        var dbUser = await _context.Users.FirstOrDefaultAsync(x => x.UserName == User.Identity.Name);
+        if (dbUser != null)
+        {
+            basketItems = await _context.BasketItems
+                .Include(x => x.Book)
+                .Where(x => x.AppUserId == dbUser.Id)
+                .Select(x => new BasketItemVm
+                {
+                    BookId = x.BookId,
+                    Name = x.Book.Name,
+                    Price = x.Book.DiscountPercentage > 0
+                        ? x.Book.Price * (100 - x.Book.DiscountPercentage) / 100
+                        : x.Book.Price,
+                    Count = x.Count,
+                    MainImageUrl = x.Book.MainImageUrl
+                })
+                .ToListAsync();
+        }
+    }
+    else
+    {
+        var basket = Context.Request.Cookies["basket"];
+        if (!string.IsNullOrEmpty(basket))
+        {
+            basketItems = JsonConvert.DeserializeObject<List<BasketItemVm>>(basket) ?? new List<BasketItemVm>();
+        }
+    }
+}
 <html lang="zxx">
 
 
@@ -295,21 +332,10 @@
                                         }
                                     </div>
                                     <div class="cart-block">
-                                        <div class="cart-total">
-                                            <span class="text-number">
-                                                1
-                                            </span>
-                                            <span class="text-item">
-                                                Shopping Cart
-                                            </span>
-                                            <span class="price">
-                                                £0.00
-                                                <i class="fas fa-chevron-down"></i>
-                                            </span>
-                                        </div>
-                                        <div class="cart-dropdown-block">
-                                            @Html.Partial("_BasketPartial", new List<BasketItemVm>())
-                                        </div>
+                                    
+                                     
+                                            @Html.Partial("_BasketPartial", basketItems)
+                                       
                                     </div>
                                 </div>
                             </div>

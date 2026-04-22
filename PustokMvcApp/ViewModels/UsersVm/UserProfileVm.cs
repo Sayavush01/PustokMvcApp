@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MVC_WEB_APP.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace MVC_WEB_APP.ViewModels.UsersVm
 {
     public class UserProfileVm
     {
         public UserProfileInfoVm UserInfo { get; set; }
+        public List<Order> Orders { get; set; }
     }
 
     public class UserProfileInfoVm

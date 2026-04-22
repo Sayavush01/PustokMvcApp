@@ -27,7 +27,7 @@
 							</div>
 							<!-- Slide Down Blox ==> Login Box  -->
 							<div class="" id="quick-login">
-							<form id="orderfrom" asp-action="CheckOut" method="post">
+							<form id="orderform" asp-action="CheckOut" method="post">
 									<div class="quick-login-form">
 										
 										<div class="form-group">
@@ -79,8 +79,8 @@
 										<p>Sub Total <span>$@(Model.CheckOutItemVms.Sum(x => x.Price * x.Count))</span></p>
 										<p>Shipping Fee <span>$00.00</span></p>
 										<h4>Grand Total <span>$@(Model.CheckOutItemVms.Sum(x => x.Price * x.Count))</span></h4>
-									
-										<button formId="place-order-form"  class="place-order w-100">Place order</button>
+
+									<button form="orderform" type="submit" class="place-order w-100">Place order</button>
 									</div>
 								</div>
 							</div>

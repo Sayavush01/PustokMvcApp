@@ -3,6 +3,19 @@
 @{
     var items = Model;
 }
+<div class="cart-total">
+    <span class="text-number">
+        @items.Count
+    </span>
+    <span class="text-item">
+        Shopping Cart
+    </span>
+    <span class="price">
+        £@items.Sum(b => b.Price * b.Count)
+        <i class="fas fa-chevron-down"></i>
+    </span>
+</div>
+<div class="cart-dropdown-block">
 @if(items.Count>0)
 {
  @foreach (var item in items)
@@ -35,3 +48,5 @@
         </div>
     </div>
 }
+
+</div>

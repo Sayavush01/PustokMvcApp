@@ -101,6 +101,7 @@ namespace MVC_WEB_APP.Controllers
                 Email = vm.Email
             };
 
+
             var result = await userManager.CreateAsync(user, vm.Password);
 
             if (!result.Succeeded)
@@ -132,7 +133,7 @@ namespace MVC_WEB_APP.Controllers
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
-            Response.Cookies.Delete("basket");
+            Response.Cookies.Delete("basket", new CookieOptions { Expires = DateTimeOffset.Now.AddDays(-1) });
             return RedirectToAction(nameof(Index), "Home");
 
         }
@@ -142,7 +143,11 @@ namespace MVC_WEB_APP.Controllers
 
         {
             ViewBag.Tab = tab;
-            var user = await userManager.GetUserAsync(User);
+            var user = await context.Users
+                .Include(u => u.Orders.Where(o => o.Status==OrderStatus.Completed))
+                    .ThenInclude(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Book)
+                .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             UserProfileVm vm = new UserProfileVm
             {
                 UserInfo = new UserProfileInfoVm
@@ -150,7 +155,9 @@ namespace MVC_WEB_APP.Controllers
                     Username = user.UserName,
                     FullName = user.FullName,
                     Email = user.Email
-                }
+                },
+                Orders = user.Orders
+
             };
 
             return View(vm);
@@ -163,13 +170,18 @@ namespace MVC_WEB_APP.Controllers
             ViewBag.Tab = "profile";
             if (!ModelState.IsValid) return View(vm);
 
-            var user = await userManager.GetUserAsync(User);
+            var user = await context.Users
+         .Include(u => u.Orders)
+            .ThenInclude(o => o.OrderItems)
+                .ThenInclude(oi => oi.Book)
+         .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (user == null) return NotFound();
 
             // Update basic user information
             user.FullName = vm.UserInfo.FullName;
             user.UserName = vm.UserInfo.Username;
             user.Email = vm.UserInfo.Email;
+            vm.Orders = user.Orders;
 
             var updateResult = await userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
@@ -242,7 +254,7 @@ namespace MVC_WEB_APP.Controllers
 
             context.SaveChanges();
 
-            Response.Cookies.Delete("basket");
+            Response.Cookies.Delete("basket", new CookieOptions { Expires = DateTimeOffset.Now.AddDays(-1) });
         }
     }
 }

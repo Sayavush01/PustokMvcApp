@@ -1,0 +1,80 @@
+@model IEnumerable<MVC_WEB_APP.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Orders</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Order List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Order Info</th>
+                                    <th>Total Price</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (item.Status == MVC_WEB_APP.Models.OrderStatus.Pending)
+                                            {
+                                                <span class="badge badge-warning">Pending</span>
+                                            }
+                                            else if (item.Status == MVC_WEB_APP.Models.OrderStatus.Completed)
+                                            {
+                                                <span class="badge badge-success">Completed</span>
+                                            }
+                                            else if (item.Status == MVC_WEB_APP.Models.OrderStatus.Cancelled)
+                                            {
+                                                <span class="badge badge-danger">Cancelled</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>Customer:</strong> @(item.AppUser?.FullName ?? "Unknown") <br />
+                                            <strong>Email:</strong> @(item.AppUser?.Email ?? "N/A") <br />
+                                            <strong>Address:</strong> @item.Address, @item.TownCity, @item.State @item.ZipCode <br />
+                                            <strong>Items Count:</strong> @item.OrderItems.Sum(x => x.Count)
+                                        </td>
+                                        <td>$@item.TotalPrice</td>
+                                        <td>@item.CreatedDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                        <td>
+                                            @if (item.Status == MVC_WEB_APP.Models.OrderStatus.Pending)
+                                            {
+                                                <form asp-action="CompleteOrder" asp-route-id="@item.Id" method="post" style="display:inline-block;">
+                                                    <button type="submit" class="btn btn-sm btn-success mb-1">Complete</button>
+                                                </form>
+                                                <form asp-action="CancelOrder" asp-route-id="@item.Id" method="post" style="display:inline-block;">
+                                                    <button type="submit" class="btn btn-sm btn-danger mb-1">Cancel</button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @if (!Model.Any())
+                        {
+                            <div class="alert alert-info text-center mt-3">No orders found.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -36,6 +36,7 @@ namespace MVC_WEB_APP.Models
         public Guid OrderId { get; set; }
         public decimal Price { get; set; }
         public Order Order { get; set; }
+        public PustokMvcApp.Models.Book Book { get; set; }
       
 }
 }
